@@ -34,7 +34,7 @@ $ man ./man_1_simple_shell
 
 Clone Repo:
 ```
-$ git clone https://github.com/guptaNswati/simple_shell.git
+$ git clone https://github.com/johnayinde/simple_shell.git
 ```
 
 Compile:
@@ -89,23 +89,25 @@ $ ./simple_shell
 ## File Descriptions
 
 - `shell.h`: Header file which contains any library includes, structs created, and all function prototypes.
-- `prompt.c`: Main shell file which prints and asks for prompt from User, creates tokens from User input, and runs executable or returns response if no executable found.
+- `prompta.c`: Main shell file which prints and asks for prompt from User, creates tokens from User input, and runs executable or returns response if no executable found.
 - `get-line.c`: Contains a rewrite of function getline and a tokenize function to split apart strings by delimiters.
-- `env-get-set.c`: All functions related to environment variables. Functions include ability to Get, Set, Unset, Print, Check.
-- `builtins.c`: Functions to handle built-in commands and checking commands via PATH environment variable.
-- `string-funcs.c`: Helper functions that handle strings, include copy, compare, tokenize/parse, and concatenate.
-- `string-funcs2.c`: More helper functions.
+- `environment_functions.c`: All functions related to environment variables. Functions include ability to Get, Set, Unset, Print, Check.
+- `built_ins.c`: Functions to handle built-in commands and checking commands via PATH environment variable.
+- `string_functionsA.c`: Helper functions that handle strings, include copy, compare, tokenize/parse, and concatenate.
+- `string_functionsB.c`: More helper functions.
 - `memory.c`: Functions to handle memory allocation and frees.
 - `cd.c`: Shell built-in change directory command.
 - `alias.c`: Functions to handle alias built-in command.
 - `aliasFunc.c`: Contains a helper function to handle aliases.
 - `hstry.c`: Functions to handle history built-in and storing history of inputted commands in an external parent directory.
-- `help.c`: Functions to handle help built-in.
+- `help_functionsA.c, help_functionsB.c`: Functions to handle help built-in.
 - `duplict-parse.c`: Helper functions for parsing and deep duping.
 
 
 ## Team
 
-*Swati Gupta* - [Github](https://github.com/guptaNswati) || [Twitter](https://github.com/guptaNswati)
+*Ayinde John*
 
-*Philip Yoo* - [Github](https://github.com/philipyoo) || [Twitter](https://twitter.com/philipYoo10)
+*Damilola Akinyele*
+READMEB.md
+Displaying READMEB.md.
