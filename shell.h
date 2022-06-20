@@ -1,161 +1,82 @@
-#ifndef SHELL
-#define SHELL
 
+#ifndef _SHELL_H_
+#define _SHELL_H_
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <signal.h>
 #include <string.h>
 #include <sys/types.h>
-#include <ctype.h>
-#include <errno.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-
-#define HSTRYLIMIT 4096
-#define BUFRSIZE 1024
-#define UNUSED(x) (void)(x)
-
-#define RESET "\033[0m"
-#define BLK "\033[30m"
-#define RED "\033[31m"
-#define GRN "\033[32m"
-#define YLW "\033[33m"
-#define BLU "\033[34m"
-#define MAG "\033[35m"
-#define CYN "\033[36m"
-#define WHI "\033[37m"
-#define BBLK "\033[1m\033[30m"
-#define BRED "\033[1m\033[31m"
-#define BGRN "\033[1m\033[32m"
-#define BYLW "\033[1m\033[33m"
-#define BBLU "\033[1m\033[34m"
-#define BMAG "\033[1m\033[35m"
-#define BCYN "\033[1m\033[36m"
-#define BWHI "\033[1m\033[37m"
+#include <sys/wait.h>
+#include <limits.h>
+#include <signal.h>
 
 
 /**
-* struct in_built - define a struct for builtins
-* @s: pointer to commands
-* @func: pointer to command function
-**/
-typedef struct in_built
+ * struct variables - variables
+ * @av: command line arguments
+ * @buffer: buffer of command
+ * @env: environment variables
+ * @count: count of commands entered
+ * @argv: arguments at opening of shell
+ * @status: exit status
+ * @commands: double pointer to commands
+ */
+typedef struct variables
 {
-	char *s;
-	void (*func) (char **);
-} in_built;
-
+	char **av;
+	char *buffer;
+	char **env;
+	size_t count;
+	char **argv;
+	int status;
+	char **commands;
+} vars_t;
 
 /**
-* struct alias - define a struct for saving alias in a linkedlist
-* @key: alias name
-* @value: alias value
-* @next: pointer to next alias
-**/
-typedef struct alias
+ * struct builtins - struct for the builtin functions
+ * @name: name of builtin command
+ * @f: function for corresponding builtin
+ */
+typedef struct builtins
 {
-	char *key;
-	char *value;
-	struct alias *next;
-} alias;
+		char *name;
+			void (*f)(vars_t *);
+} builtins_t;
 
-/**
-* struct hstory - define a struct for saving history in a linkedlist
-* @input: user input
-* @next: pointer to next history node
-**/
-typedef struct hstory
-{
-        char *input;
-        struct hstory *next;
-} hstory;
+char **make_env(char **env);
+void free_env(char **env);
 
-/**
-* struct help_struct - define a struct for commands help page
-* @cmd: builtin command
-* @synopsis: description of command
-* @func: pointer to command functions
-**/
-typedef struct help_struct
-{
-	char *cmd;
-	char *synopsis;
-	void (*func) ();
-} help_struct;
+ssize_t _puts(char *str);
+char *_strdup(char *strtodup);
+int _strcmpr(char *strcmp1, char *strcmp2);
+char *_strcat(char *strc1, char *strc2);
+unsigned int _strlen(char *str);
 
+char **tokenize(char *buffer, char *delimiter);
+char **_realloc(char **ptr, size_t *size);
+char *new_strtok(char *str, const char *delim);
 
-/**
-* struct save_mem - define a struct for saving refernces to allocated memory
-* @loc: address of memory area
-* @next: pointer to next memory area
-**/
-typedef struct save_mem
-{
-	void *loc;
-	struct save_mem *next;
-} save_mem;
+void (*check_for_builtins(vars_t *vars))(vars_t *vars);
+void new_exit(vars_t *vars);
+void _env(vars_t *vars);
+void new_setenv(vars_t *vars);
+void new_unsetenv(vars_t *vars);
 
-hstory **getHistoryHead(void);
-alias **getAliasHead(void);
-ssize_t _getline(char **lineptr, int fd);
-char *linep_withoutspaces(char *line);
-char **tokenize(char *lineptr, char dlimtr);
-char **parse_path(char *path, char dlimtr);
-int find_builtins(char **tokens);
-void check_path(char **tokens, char *p);
-void excute(char **tokens);
-void promptUser(void);
+void add_key(vars_t *vars);
+char **find_key(char **env, char *key);
+char *add_value(char *key, char *value);
+int _atoi(char *str);
 
-int _strlen(char *str);
-char *_strcpy(char *strng, int i);
-int _strcmp(char *s1, char *s2);
-char *_strcat2(char *s1, char *s2);
-char *_strcat(char *str1, char *str2, char formatter);
-void _puts(char *buffer);
-void _putchar(char c);
-void _puts_num(int n);
-int _atoi(char *s);
-char **deepDupe(char **args);
+void check_for_path(vars_t *vars);
+int path_execute(char *command, vars_t *vars);
+char *find_path(char **env);
+int execute_cwd(vars_t *vars);
+int check_for_dir(char *str);
 
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
-int add_mem(void **p, save_mem **head);
-int remove_child_mem(void **p, save_mem **head);
-int remove_mem(void **p, save_mem **head);
-int _ref_mem(void *p, char *action);
-void *_malloc(unsigned int size);
-void _free(void *ptr);
+void print_error(vars_t *vars, char *msg);
+void _puts2(char *str);
+char *_uitoa(unsigned int count);
 
-void alias_data(void);
-void cd_data(void);
-void env_data(char *cmd);
-void exit_data(void);
-void help_data(void);
-void history_data(void);
-void setenv_data(void);
-void unsetenv_data(void);
+#endif /* _SHELL_H_ */
 
-void whichAlias(char **tokens);
-alias *resetAlias(alias **head, char *key, char *value);
-alias *addAlias(alias **head, char *key, char *value);
-void printAlias(alias **head);
-alias *findAlias(alias **head, char *key);
-alias *find_aliasToalias(alias **head, char *key);
-
-void chng_dr(char **str);
-void ext(char **str);
-void hlp(char **str);
-
-int checkEnv(char *name);
-char *_getenv(char *name);
-void _setenv(char **str);
-void _unsetenv(char **str);
-void printEnv(char **str);
-
-hstory *addHistory(hstory **head, char *input, int *nodeCount);
-hstory *popHead(hstory **head, int *nodeCount);
-int readFromFile(char *file, hstory **head, int *nodeCount);
-int writeHstorytofile(char *file);
-void printHistory(char **str);
-
-#endif
